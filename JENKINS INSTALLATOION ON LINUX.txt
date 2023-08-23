@@ -1,0 +1,38 @@
+                                 JENKINS INSTALLATOION ON LINUX
+
+sudo yum -y update
+sudo amazon-linux-extras install java-openjdk11
+sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
+[jenkins]
+name=Jenkins
+baseurl=http://pkg.jenkins.io/redhat
+gpgcheck=0
+EOF
+sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+sudo yum install jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+systemctl status jenkins
+service jenkins restart
+
+
+
+
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>
+<user username="admin" password="admin" roles="manager-gui, manager-script, manager-jmx, manager-status"/>
+
+--------------------------------------------------------------------------
+
+# copywarfile.yml
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: copy jar/war onto tomcat server
+      copy:
+        src: /home/ansible/cicd-for-webapp.war
+        dest: /root/apache-tomcat-9.0.78/webapps
