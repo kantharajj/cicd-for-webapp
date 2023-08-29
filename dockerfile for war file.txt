@@ -1,0 +1,106 @@
+### vi Dockerfile
+# Pull base image 
+From tomcat:8-jre8 
+
+# copy war file on to container 
+COPY ./cicd-for-webapp.war /usr/local/tomcat/webapps
+
+
+
+
+docker stop qspider;
+docker rm -f qspider;
+docker image rm -f qspider;
+cd /home/dockeradmin;
+docker build -t qspider .
+
+docker run -it -d --name qspider -p 8090:8080 qspider
+
+
+---------------------------------------------------
+
+cd /home/ansible
+docker build -t $JOB_NAME:v1.$BUILD_ID .
+docker tag $JOB_NAME:v1.$BUILD_ID kantharaj46/$JOB_NAME:v1.$BUILD_ID
+docker tag $JOB_NAME:v1.$BUILD_ID kantharaj46/$JOB_NAME:latest
+docker push kantharaj46/$JOB_NAME:v1.$BUILD_ID
+docker push kantharaj46/$JOB_NAME:latest
+docker rmi $JOB_NAME:v1.$BUILD_ID kantharaj46/$JOB_NAME:v1.$BUILD_ID kantharaj46/$JOB_NAME:latest
+
+---
+- hosts: all
+  become: true
+  tasks:
+     - name: stop previous version docker
+       shell: docker stop qspider
+     - name: remove stopped container
+       shell: docker rm -f qspider	  
+     - name: remove docker images
+       shell: docker image rm -f kantharaj46/project-4       
+     - name: create docker image
+       shell: docker run -it -d --name qspider -p 8090:8080 kantharaj46/project-4
+
+
+
+
+---
+- hosts: all
+  become: true
+  tasks:
+    # - name: stop previous version docker
+    #   shell: docker stop qspider
+    # - name: remove stopped container
+    #  shell: docker rm -f qspider	  
+    #- name: remove docker images
+    #  shell: docker image rm -f kantharaj46/job1       
+     - name: create docker image
+       shell: docker run -it -d --name qspider -p 8090:8080 kantharaj46/job1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------
+
+# Pull base image 
+From tomcat:8-jre8 
+
+# copy war file on to container
+COPY ./cicd-for-webapp.war /usr/local/tomcat/webapps
+
+--------------------------------------------------------------------------
+
+docker stop qspider;
+docker rm -f qspider;
+docker image rm -f qspider;
+cd /home/dockeradmin;
+docker build -t qspider .
+
+
+docker run -it -d --name qspider -p 8090:8080 qspider
+
+usermod -aG docker dockeradmin
